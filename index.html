@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>無料査定・売却のご相談|森不動産</title>
+<style>
+  :root{--navy:#1B2A4A;--gold:#B08D4F;--cream:#E6E2D7;--pale:#FCFBF8;--ink:#21262F;--muted:#6E7480;--line:#D6DAE4;--red:#C0392B}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--pale)}
+  body{font-family:Meiryo,"Hiragino Sans",sans-serif;font-size:16px;line-height:1.6;color:var(--ink);padding-bottom:96px}
+  header{background:var(--navy);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px}
+  header .bar{width:6px;height:20px;background:var(--gold)}
+  header .t{font-size:15px}
+  .steps{display:flex;gap:6px;padding:14px 16px 0;font-size:12px;color:var(--muted)}
+  .steps span{flex:1;height:4px;background:var(--cream);border-radius:2px}
+  .steps span.on{background:var(--gold)}
+  .lead{padding:12px 16px 0;font-size:13px;color:var(--muted)}
+  .page{padding:8px 16px 16px;display:none}
+  .page.on{display:block}
+  .f{margin-top:18px}
+  .f label.h{display:flex;align-items:center;gap:8px;font-weight:bold;font-size:15px;margin-bottom:8px}
+  .req{font-size:11px;font-weight:normal;color:#fff;background:var(--red);border-radius:3px;padding:1px 6px}
+  .opt{font-size:11px;font-weight:normal;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 6px}
+  .choices{display:flex;flex-direction:column;gap:8px}
+  .choices label{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:6px;cursor:pointer}
+  .choices input{width:20px;height:20px;margin:0;accent-color:var(--navy)}
+  .choices label:has(input:checked){border-color:var(--navy);background:#F3EFE4}
+  input[type=text],input[type=tel],textarea{width:100%;font:inherit;padding:12px;border:1px solid var(--line);border-radius:6px;background:#fff}
+  textarea{min-height:96px;resize:vertical}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .err{display:none;font-size:13px;color:var(--red);margin-top:6px}
+  .f.bad .err{display:block}
+  .f.bad input[type=text],.f.bad input[type=tel],.f.bad textarea,.f.bad .choices label{border-color:var(--red)}
+  .consent{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:14px}
+  .consent input{width:20px;height:20px;margin:2px 0 0;flex:none;accent-color:var(--navy)}
+  .consent a{color:var(--navy)}
+  .foot{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:10px}
+  .btn{flex:1;height:50px;border:0;border-radius:6px;font:inherit;font-size:16px;font-weight:bold;cursor:pointer}
+  .btn.p{background:var(--navy);color:#fff}
+  .btn.s{background:#fff;color:var(--navy);border:1px solid var(--navy);flex:0 0 100px}
+  .btn:disabled{opacity:.5}
+  .done{padding:32px 16px;text-align:center}
+  .done .no{font-size:22px;font-weight:bold;color:var(--navy);margin:8px 0 16px}
+  .done p{font-size:14px;color:var(--muted);text-align:left}
+  .box{background:#fff;border:1px solid var(--line);border-radius:6px;padding:14px;text-align:left;font-size:14px;white-space:pre-wrap;margin-top:12px}
+  .toast{position:fixed;top:12px;left:16px;right:16px;background:var(--red);color:#fff;padding:10px 14px;border-radius:6px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.on{opacity:1}
+  .loading{padding:40px 16px;text-align:center;color:var(--muted)}
+</style>
+</head>
+<body>
+<header><div class="bar"></div><div class="t">無料査定・売却のご相談</div></header>
+
+<div id="loading" class="loading">読み込み中...</div>
+
+<div id="formWrap" style="display:none">
+  <div class="steps"><span id="st1" class="on"></span><span id="st2"></span></div>
+  <div class="lead" id="lead">1/2 ご相談内容について教えてください</div>
+
+  <!-- 1ページ目:ご相談内容 -->
+  <section class="page on" id="p1">
+    <div class="f" data-k="type">
+      <label class="h">不動産の種別 <span class="req">必須</span></label>
+      <div class="choices" id="type"></div>
+      <div class="err">選んでください</div>
+    </div>
+    <div class="f" data-k="relation">
+      <label class="h">その不動産とのご関係 <span class="req">必須</span></label>
+      <div class="choices" id="relation"></div>
+      <div class="err">選んでください</div>
+    </div>
+    <div class="f" data-k="location">
+      <label class="h" for="location">不動産の所在地 <span class="req">必須</span></label>
+      <input type="text" id="location" maxlength="200" placeholder="例:中野区本町" autocomplete="off">
+      <div class="hint">町名までで結構です</div>
+      <div class="err">入力してください</div>
+    </div>
+    <div class="f" data-k="topic">
+      <label class="h">ご希望の相談内容 <span class="req">必須</span></label>
+      <div class="choices" id="topic"></div>
+      <div class="err">選んでください</div>
+    </div>
+    <div class="f" data-k="detail">
+      <label class="h" for="detail">詳しい状況 <span class="opt">任意</span></label>
+      <textarea id="detail" maxlength="1000" placeholder="例:相続で兄弟3人の共有名義。5年ほど空き家になっている。"></textarea>
+      <div class="hint">分かる範囲で結構です。お電話の前に担当者が確認します(<span id="detailCount">0</span>/1000文字)</div>
+    </div>
+  </section>
+
+  <!-- 2ページ目:ご連絡先 -->
+  <section class="page" id="p2">
+    <div class="f" data-k="name">
+      <label class="h" for="name">お名前 <span class="req">必須</span></label>
+      <input type="text" id="name" maxlength="50" placeholder="例:森 太郎" autocomplete="name">
+      <div class="err">入力してください</div>
+    </div>
+    <div class="f" data-k="kana">
+      <label class="h" for="kana">フリガナ <span class="req">必須</span></label>
+      <input type="text" id="kana" maxlength="50" placeholder="例:モリ タロウ" autocomplete="off">
+      <div class="err">入力してください</div>
+    </div>
+    <div class="f" data-k="time">
+      <label class="h">お電話のご希望の時間帯 <span class="req">必須</span></label>
+      <div class="choices" id="time"></div>
+      <div class="err">選んでください</div>
+    </div>
+    <div class="f" data-k="phone" id="phoneF">
+      <label class="h" for="phone">お電話番号 <span class="req">必須</span></label>
+      <input type="tel" id="phone" inputmode="numeric" placeholder="例:09012345678" autocomplete="tel">
+      <div class="hint">今回のご相談への回答と日程調整にのみ利用します</div>
+      <div class="err">数字で入力してください(例:09012345678)</div>
+    </div>
+    <div class="f" data-k="consent">
+      <label class="consent"><input type="checkbox" id="consent">
+        <span>ご入力いただいた個人情報は、今回のご相談への回答・日程調整・ご相談内容の確認にのみ利用し、ご本人の同意なく第三者に提供しません。<span id="policyLink"></span><br>上記に同意します <span class="req">必須</span></span>
+      </label>
+      <div class="err">同意にチェックを入れてください</div>
+    </div>
+  </section>
+
+  <div class="foot">
+    <button type="button" class="btn s" id="back" style="display:none">戻る</button>
+    <button type="button" class="btn p" id="next">次へ</button>
+  </div>
+</div>
+
+<div id="done" class="done" style="display:none">
+  <div>ご相談を受け付けました</div>
+  <div class="no" id="doneId"></div>
+  <p id="doneMsg">LINEのトークに受付内容をお送りしました。担当者からご希望の時間にご連絡します。</p>
+  <div class="box" id="doneBox" style="display:none"></div>
+  <div class="foot"><button type="button" class="btn p" id="close">LINEに戻る</button></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+  // ===== 設定(本番に移すときはここを書き換える) =====
+  const LIFF_ID = '2012295551-Asc2cfl4'; // テスト用。LINE Developers → LINEログインチャネル → LIFF
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwIvysHtueLjm2qqorS5hRosKjLmc41m4xYTPI1D-cHm7nZFCbfhY6r4rM_9Ns12SJI/exec'; // Webhook用デプロイ
+  const POLICY_URL = ''; // プライバシーポリシーのURL(無ければ空のまま)
+  // 選択肢はサーバー(Code.gs の TYPES / RELATIONS / TOPICS / TIMES)と一字一句同じにする。違うと送信時に弾かれる
+  const OPT = {
+    types: ['戸建て', 'マンション', '土地', 'その他・わからない'],
+    relations: ['自分が所有している', '家族が所有(相続した・する予定)', 'その他'],
+    topics: ['訪問査定をお願いしたい', '概算の価格を電話で聞きたい', '買取も検討している', 'まずは話を聞いてみたい'],
+    times: ['平日 午前(10〜12時)', '平日 午後(13〜18時)', '土日祝(事前予約制)', '電話は難しい(LINEで連絡希望)'],
+    timeLine: '電話は難しい(LINEで連絡希望)',
+  };
+  // ===================================================
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // Apps Scriptへ送信。Content-Typeを付けない(text/plain扱い)ことで、ブラウザの事前確認なしに送れる
+  // 申込キー:この画面を開いている間は同じ。通信が切れて再送しても、サーバーは同じ受付として扱う
+  const SUBMIT_KEY = (crypto.randomUUID ? crypto.randomUUID() : (Date.now().toString(36) + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2))).replace(/[^A-Za-z0-9-]/g, '');
+  async function submit(idToken, a) {
+    const res = await fetch(GAS_URL + '?form=1', { method: 'POST', body: JSON.stringify({ idToken, a, key: SUBMIT_KEY }) });
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || '送信できませんでした');
+    return j;
+  }
+  function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 2600); }
+
+  function radios(id, list) {
+    $(id).innerHTML = list.map((v, i) => `<label><input type="radio" name="${id}" value="${esc(v)}">${esc(v)}</label>`).join('');
+  }
+  radios('type', OPT.types); radios('relation', OPT.relations); radios('topic', OPT.topics); radios('time', OPT.times);
+  if (POLICY_URL) $('policyLink').innerHTML = `(<a href="${esc(POLICY_URL)}" target="_blank" rel="noopener">プライバシーポリシー</a>)`;
+
+  const val = (id) => { const r = document.querySelector(`input[name="${id}"]:checked`); return r ? r.value : ''; };
+  const phoneNeeded = () => val('time') && val('time') !== OPT.timeLine;
+  document.querySelectorAll('input[name="time"]').forEach((r) => r.onchange = () => { $('phoneF').style.display = phoneNeeded() || !val('time') ? '' : 'none'; });
+
+  function mark(k, bad) { const f = document.querySelector(`.f[data-k="${k}"]`); f.classList.toggle('bad', bad); return !bad; }
+  function validate1() {
+    let ok = true;
+    ok = mark('type', !val('type')) && ok;
+    ok = mark('relation', !val('relation')) && ok;
+    ok = mark('location', !$('location').value.trim()) && ok;
+    ok = mark('topic', !val('topic')) && ok;
+    return ok;
+  }
+  function validate2() {
+    let ok = true;
+    ok = mark('name', !$('name').value.trim()) && ok;
+    ok = mark('kana', !$('kana').value.trim()) && ok;
+    ok = mark('time', !val('time')) && ok;
+    const ph = $('phone').value.normalize('NFKC').replace(/[-ー−‐‑–—\s]/g, '');
+    ok = mark('phone', phoneNeeded() && !/^0\d{9,10}$/.test(ph)) && ok;
+    ok = mark('consent', !$('consent').checked) && ok;
+    return ok;
+  }
+  document.querySelectorAll('.f').forEach((f) => f.addEventListener('input', () => f.classList.remove('bad')));
+  $('detail').addEventListener('input', () => { $('detailCount').textContent = $('detail').value.length; });
+  document.querySelectorAll('.f').forEach((f) => f.addEventListener('change', () => f.classList.remove('bad')));
+
+  let page = 1, sending = false;
+  function show(n) {
+    page = n;
+    $('p1').classList.toggle('on', n === 1); $('p2').classList.toggle('on', n === 2);
+    $('st2').classList.toggle('on', n === 2);
+    $('lead').textContent = n === 1 ? '1/2 ご相談内容について教えてください' : '2/2 ご連絡先を教えてください';
+    $('back').style.display = n === 2 ? '' : 'none';
+    $('next').textContent = n === 1 ? '次へ' : '送信する';
+    window.scrollTo(0, 0);
+  }
+  $('back').onclick = () => show(1);
+  $('next').onclick = async () => {
+    if (page === 1) { if (validate1()) show(2); else scrollToBad(); return; }
+    if (!validate2()) { scrollToBad(); return; }
+    if (sending) return;
+    sending = true; $('next').disabled = true; $('next').textContent = '送信中...';
+    const a = {
+      type: val('type'), relation: val('relation'), location: $('location').value, topic: val('topic'), detail: $('detail').value,
+      name: $('name').value, kana: $('kana').value, time: val('time'), phone: phoneNeeded() ? $('phone').value : '',
+      consent: $('consent').checked,
+    };
+    try {
+      const idToken = liff.getIDToken();
+      const r = await submit(idToken, a);
+      $('formWrap').style.display = 'none';
+      $('doneId').textContent = '受付番号 ' + r.intakeId;
+      // 本人の発言として合図を1通送る → ボットが応答で受付内容を返す(送信通数ゼロ)
+      let sentToChat = false;
+      if (liff.isInClient()) {
+        try { await liff.sendMessages([{ type: 'text', text: r.sendText }]); sentToChat = true; } catch (e) {}
+      }
+      // 受付内容は完了画面にも必ず出す(トークへの返事が届かなかった場合の控え)
+      $('doneMsg').textContent = sentToChat
+        ? 'LINEのトークにも受付内容をお送りします。担当者からご希望の時間にご連絡します。'
+        : '受付内容は以下のとおりです。担当者からご希望の時間にご連絡します。';
+      $('doneBox').textContent = r.summary; $('doneBox').style.display = '';
+      $('done').style.display = '';
+      window.scrollTo(0, 0);
+    } catch (e) {
+      toast(e.message || '送信できませんでした。時間をおいてお試しください');
+      sending = false; $('next').disabled = false; $('next').textContent = '送信する';
+    }
+  };
+  function scrollToBad() { const b = document.querySelector('.f.bad'); if (b) b.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  $('close').onclick = () => { if (liff.isInClient()) liff.closeWindow(); else window.close(); };
+
+  // 起動の経過。止まったときに画面へ出して原因を切り分ける(個人情報は出さない)
+  const TRACE = [];
+  const step = (m) => { TRACE.push(((performance.now() / 1000).toFixed(1)) + 's ' + m); };
+  function showTrace(head) {
+    let inIframe = 'unknown'; try { inIframe = String(window.self !== window.top); } catch (e) { inIframe = 'true(cross)'; }
+    const info = [
+      'host: ' + location.host,
+      'iframe: ' + inIframe,
+      'hash: ' + (location.hash ? 'あり' : 'なし') + ' / query: ' + (location.search ? 'あり' : 'なし'),
+      'LINE内: ' + (/Line\//.test(navigator.userAgent) ? 'はい' : 'いいえ'),
+      'liff: ' + (typeof liff),
+    ];
+    $('loading').innerHTML = '<div style="text-align:left;font-size:13px;line-height:1.7">' +
+      '<b>' + esc(head) + '</b><br>この画面のスクリーンショットを担当者に送ってください。<br><br>' +
+      esc(info.join('\n')).replace(/\n/g, '<br>') + '<br><br>' + esc(TRACE.join('\n')).replace(/\n/g, '<br>') + '</div>';
+  }
+
+  (async () => {
+    step('start');
+    const watchdog = setTimeout(() => showTrace('読み込みが終わりません'), 12000);
+    try {
+      if (!LIFF_ID) throw new Error('LIFF_ID が未設定です');
+      if (typeof liff === 'undefined') throw new Error('LIFF SDK を読み込めませんでした');
+      step('init 開始');
+      await liff.init({ liffId: LIFF_ID, withLoginOnExternalBrowser: true });
+      step('init 完了 inClient=' + liff.isInClient() + ' loggedIn=' + liff.isLoggedIn());
+      if (!liff.isLoggedIn()) { step('login へ'); liff.login(); return; }
+      clearTimeout(watchdog);
+      $('loading').style.display = 'none';
+      $('formWrap').style.display = '';
+    } catch (e) {
+      clearTimeout(watchdog);
+      step('error ' + (e.code || '') + ' ' + (e.message || e));
+      showTrace('フォームを開けませんでした');
+    }
+  })();
+</script>
+</body>
+</html>
